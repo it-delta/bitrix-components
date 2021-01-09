@@ -2,16 +2,24 @@
 if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED!==true) die();
 ?>
 
-<h1><?= $arResult['NAME'] ?></h1>
+<div id="<?=$this->GetEditAreaId($arResult['ID']);?>">
+	<h1><?= $arResult['NAME'] ?></h1>
 
-<p class="uk-article-meta"><?= $arResult['DATE_ACTIVE_FROM'] ?></p>
+	<p><?= $arResult['DATE_ACTIVE_FROM'] ?></p>
+	<?
+	$this->AddEditAction($arResult['ID'], $arResult['EDIT_LINK'], CIBlock::GetArrayByID($arResult["IBLOCK_ID"], "ELEMENT_EDIT"));
+	$this->AddDeleteAction($arResult['ID'], $arResult['DELETE_LINK'], CIBlock::GetArrayByID($arResult["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => "Удалить?"));
+	?>
 
-<div class="uk-clearfix">
 	<? if ($arResult['DETAIL_PICTURE_CACHE']['src'] || $arResult['DETAIL_PICTURE']['SRC']): ?>
-	<img class="uk-align-medium-left"
-		 src="<?= $arResult['DETAIL_PICTURE_CACHE']['src'] ?: $arResult['DETAIL_PICTURE']['SRC'] ?>"
-		 alt=""
-	>
+		<img src="<?= $arResult['DETAIL_PICTURE_CACHE']['src'] ?: $arResult['DETAIL_PICTURE']['SRC'] ?>">
 	<? endif; ?>
-	<?= $arResult['DETAIL_TEXT'] ?>
+
+	<p>
+		<?= $arResult['DETAIL_TEXT'] ?>
+	</p>
 </div>
+
+<pre>
+	<?=print_r($arResult);?>
+</pre>

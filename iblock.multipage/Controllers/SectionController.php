@@ -8,7 +8,7 @@ use IblockMultipageComponent\lib\Elements;
 use Slim\Exception\HttpNotFoundException;
 use Psr\Http\Message\ResponseInterface;
 
-class ElementController extends BaseController
+class SectionController extends BaseController
 {
 	public function index($request, $response, array $args, $component): ResponseInterface
 	{
@@ -20,48 +20,42 @@ class ElementController extends BaseController
       $curdir = $APPLICATION->GetCurDir();
 
 			if ($this->component->StartResultCache(false, $curdir)) {
-					$this->component->arResult = $this->getElement();
+
+					$section_code = $this->args['section'];
+					$this->component->arResult = Sections::getSection(
+	            [
+	                'IBLOCK_ID' => $this->component->arParams['IBLOCK_ID'],
+	                'ACTIVE'    => 'Y',
+	                'CODE'      => $section_code
+	            ],
+	            $this->component->arParams['IMG_CACHE']['CATEGORIES']
+	        );
+
           if (empty($this->component->arResult)) {
               throw new HttpNotFoundException($request);
           }
-					$this->component->arResult['IPROPERTY_VALUES'] =
-						(new ElementValues(
-		                    $this->component->arResult['IBLOCK_ID'],
-		                    $this->component->arResult['ID']
-						))->getValues();
-					$this->component->arResult['SECTION_PATH'] =
-						Sections::getPath(
-							$this->component->arParams['IBLOCK_ID'],
-							$this->component->arResult['IBLOCK_SECTION_ID']
-						);
-					$this->component->SetResultCacheKeys([
-		                'ID', 'NAME', 'DETAIL_PAGE_URL', 'IPROPERTY_VALUES', 'SECTION_PATH'
-		            ]);
 
-					$this->component->IncludeComponentTemplate('element');
+					$this->component->arResult['IPROPERTY_VALUES'] =
+							(new ElementValues(
+			                    $this->component->arResult['IBLOCK_ID'],
+			                    $this->component->arResult['ID']
+							))->getValues();
+
+					$this->component->arResult['SECTION_PATH'] =
+							Sections::getPath(
+								$this->component->arParams['IBLOCK_ID'],
+								$this->component->arResult['IBLOCK_SECTION_ID']
+							);
+
+					$this->component->SetResultCacheKeys([
+              'ID', 'NAME', 'DETAIL_PAGE_URL', 'IPROPERTY_VALUES', 'SECTION_PATH'
+          ]);
+
+					$this->component->IncludeComponentTemplate('section');
 			}
 
 			$this->setMetaInfo();
 			return $response;
-	}
-
-	/**
-	 * Получить информацию по текущему элементу
-	 *
-	 * @return array
-	 */
-	protected function getElement()
-	{
-		$element_code = $this->args['element'];
-
-		return Elements::getElement(
-			[
-				'IBLOCK_ID' => $this->component->arParams['IBLOCK_ID'],
-				'ACTIVE' => 'Y',
-				'CODE' => $element_code
-			],
-			$this->component->arParams['IMG_CACHE']['ELEMENT']
-		);
 	}
 
 	/**

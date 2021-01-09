@@ -1,17 +1,16 @@
 <?php
 
-use Symfony\Component\ClassLoader\Psr4ClassLoader;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+
+use Slim\Factory\AppFactory;
+
+use IblockMultipageComponent\lib\RequestResponseBitrix;
+
+require __DIR__ . '/../vendor/autoload.php';
 
 class IblockMultipageComponent extends CBitrixComponent
 {
-    public function registerAutoload()
-    {
-        $loader = new Psr4ClassLoader();
-
-        $loader->addPrefix('IblockMultipageComponent', __DIR__);
-
-        $loader->register();
-    }
 
     public function executeAction($bitrix, $slim, $controller, $action)
     {
@@ -25,6 +24,7 @@ class IblockMultipageComponent extends CBitrixComponent
         }
 
         $c->afterExecuteAction();
+
     }
 
     public function getRoutes()
@@ -59,21 +59,21 @@ class IblockMultipageComponent extends CBitrixComponent
                 return [
                     [
                         'METHOD' => 'GET, POST',
-                        'URL' => '/(index.php)',
+                        'URL' => '/',
                         'NAME' => 'elements',
                         'CONTROLLER' => 'Elements',
                         'ACTION' => 'index'
                     ],
                     [
                         'METHOD' => 'GET, POST',
-                        'URL' => '/:category',
+                        'URL' => '/{category}',
                         'NAME' => 'category',
                         'CONTROLLER' => 'Category',
                         'ACTION' => 'index'
                     ],
                     [
                         'METHOD' => 'GET, POST',
-                        'URL' => '/:category/:element',
+                        'URL' => '/{category}/{element}',
                         'NAME' => 'element',
                         'CONTROLLER' => 'Element',
                         'ACTION' => 'index'
@@ -126,51 +126,32 @@ class IblockMultipageComponent extends CBitrixComponent
 
     public function executeComponent()
     {
-        $this->registerAutoload();
+        $namespace = '\\IblockMultipageComponent\\Controllers\\';
+        $slim = AppFactory::create();
 
-        $slim   = new \Slim\Slim();
         $routes = $this->getRoutes();
         $bitrix = $this;
+
+        $routeCollector = $slim->getRouteCollector();
+        $routeCollector->setDefaultInvocationStrategy(new RequestResponseBitrix($bitrix));
+
+        $errorMiddleware = $slim->addErrorMiddleware(true, true, true);
+
+        $errorMiddleware->setErrorHandler(
+            Slim\Exception\HttpNotFoundException::class,
+            function (Request $request, Throwable $exception, bool $displayErrorDetails) use($bitrix) {
+                $bitrix->IncludeComponentTemplate('404');
+            });
+
         $sef    = rtrim($this->arParams['SEF_URL'], '/');
 
-        foreach ($routes as $route) {
-            if (count(explode('.', $_SERVER['SERVER_NAME'])) > 2) {
-                $url = $sef.$route['URL'];
-            } else {
-                $url = $route['URL'] != '/' ? $sef.$route['URL'] : $route['URL'];
-            }
+        $slim->any($sef.'/elements[/{category}]', $namespace.'ElementsController:index');
 
-            $url .= '(/(index.php))';
+        $slim->any($sef.'/[{section}]', $namespace.'IndexController:index');
+        $slim->any($sef.'/{section}/detail', $namespace.'SectionController:index');
+        $slim->any($sef.'/element/{element}', $namespace.'ElementController:index');
 
-            if ($route['METHOD'] == 'GET, POST') {
-                $slim->map($url,
-                    function() use($bitrix, $slim, $route) {
-
-                    $bitrix->executeAction(
-                        $bitrix,
-                        $slim,
-                        $route['CONTROLLER'],
-                        $route['ACTION']
-                    );
-                })->via('GET', 'POST')->name($route['NAME']);
-            } else {
-                $method = strtolower($route['METHOD']);
-                $slim->$method($url,
-                    function() use($bitrix, $slim, $route) {
-
-                    $bitrix->executeAction(
-                        $bitrix,
-                        $slim,
-                        $route['CONTROLLER'],
-                        $route['ACTION']
-                    );
-                })->name($route['NAME']);
-            }
-        }
-
-        $slim->notFound(function() use($bitrix) {
-            $bitrix->IncludeComponentTemplate('404');
-        });
+        // $slim->any($sef.'/', $namespace.'ElementsController:index');
 
         $slim->run();
     }
