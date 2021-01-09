@@ -1,2 +1,7 @@
 /*/
 !iblock.multipage
+!READ.ME
+!composer.json
+!composer.lock
+
+/vendor/
