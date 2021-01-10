@@ -12,7 +12,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED!==true) die();
 	?>
 
 	<? if ($arResult['DETAIL_PICTURE_CACHE']['src'] || $arResult['DETAIL_PICTURE']['SRC']): ?>
-		<img src="<?= $arResult['DETAIL_PICTURE_CACHE']['src'] ?: $arResult['DETAIL_PICTURE']['SRC'] ?>">
+		<img src="<?= $arResult['DETAIL_PICTURE_CACHE']['src'] ?? $arResult['DETAIL_PICTURE']['SRC1'] ?>">
 	<? endif; ?>
 
 	<p>

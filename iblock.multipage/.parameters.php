@@ -60,72 +60,89 @@ $arComponentParameters = array(
     'PARAMETERS' => array(
         'IBLOCK_TYPE' => array(
             'PARENT' => 'BASE',
-            'NAME' => Loc::getMessage('T_IBLOCK_DESC_LIST_TYPE'),
+            'NAME' => "Тип информационного блока (используется только для проверки)",
             'TYPE' => 'LIST',
             'VALUES' => $arTypesEx,
-            'DEFAULT' => 'news',
             'REFRESH' => 'Y',
         ),
         'IBLOCK_ID' => array(
             'PARENT' => 'BASE',
-            'NAME' => Loc::getMessage('T_IBLOCK_DESC_LIST_ID'),
+            'NAME' => "Код информационного блока",
             'TYPE' => 'LIST',
             'VALUES' => $arIBlocks,
-            'DEFAULT' => '={$_REQUEST["ID"]}',
             'ADDITIONAL_VALUES' => 'Y',
             'REFRESH' => 'Y',
         ),
         'FILTER_NAME' => array(
             'PARENT' => 'DATA_SOURCE',
-            'NAME' => Loc::getMessage('T_IBLOCK_FILTER'),
+            'NAME' => "Имя переменной фильтра",
             'TYPE' => 'STRING',
             "DEFAULT" => "arrFilter1",
             "MULTIPLE" => "N",
             "COLS" => 25
         ),
-        'ACTIVE_DATE' => array(
-            'PARENT' => 'ADDITIONAL_SETTINGS',
-            'NAME' => Loc::getMessage('ITD_ACTIVE_DATE'),
-            'TYPE' => 'CHECKBOX',
-            'DEFAULT' => 'N',
-        ),
-        'SORT_BY1' => array(
+        'ELEMENTS_SORT_BY_1' => array(
             'PARENT' => 'DATA_SOURCE',
-            'NAME' => Loc::getMessage('T_IBLOCK_DESC_IBORD1'),
+            'NAME' => "Сортировка элементов №1",
             'TYPE' => 'LIST',
-            'DEFAULT' => 'ACTIVE_FROM',
             'VALUES' => $arSortFields,
-            'ADDITIONAL_VALUES' => 'Y',
         ),
-        'SORT_ORDER1' => array(
+        'ELEMENTS_SORT_ORDER_1' => array(
             'PARENT' => 'DATA_SOURCE',
-            'NAME' => Loc::getMessage('T_IBLOCK_DESC_IBBY1'),
-            'TYPE' => 'LIST',
-            'DEFAULT' => 'DESC',
-            'VALUES' => $arSorts,
-            'ADDITIONAL_VALUES' => 'Y',
-        ),
-        'SORT_BY2' => array(
-            'PARENT' => 'DATA_SOURCE',
-            'NAME' => Loc::getMessage('T_IBLOCK_DESC_IBORD2'),
-            'TYPE' => 'LIST',
-            'DEFAULT' => 'SORT',
-            'VALUES' => $arSortFields,
-            'ADDITIONAL_VALUES' => 'Y',
-        ),
-        'SORT_ORDER2' => array(
-            'PARENT' => 'DATA_SOURCE',
-            'NAME' => Loc::getMessage('T_IBLOCK_DESC_IBBY2'),
+            'NAME' => "Направление сортировки №1",
             'TYPE' => 'LIST',
             'DEFAULT' => 'ASC',
             'VALUES' => $arSorts,
-            'ADDITIONAL_VALUES' => 'Y',
         ),
-        'PAGE_ELEMENT_COUNT' => array(
+        'ELEMENTS_SORT_BY_2' => array(
+            'PARENT' => 'DATA_SOURCE',
+            'NAME' => "Сортировка элементов №2",
+            'TYPE' => 'LIST',
+            'VALUES' => $arSortFields,
+        ),
+        'ELEMENTS_SORT_ORDER_2' => array(
+            'PARENT' => 'DATA_SOURCE',
+            'NAME' => "Направление сортировки №2",
+            'TYPE' => 'LIST',
+            'DEFAULT' => 'ASC',
+            'VALUES' => $arSorts,
+        ),
+        'SECTION_SORT_BY' => array(
+            'PARENT' => 'DATA_SOURCE',
+            'NAME' => "Сортировка секций",
+            'TYPE' => 'LIST',
+            'VALUES' => $arSortFields,
+        ),
+        'SECTION_SORT_ORDER' => array(
+            'PARENT' => 'DATA_SOURCE',
+            'NAME' => "Направление сортировки секций",
+            'TYPE' => 'LIST',
+            'DEFAULT' => 'ASC',
+            'VALUES' => $arSorts,
+        ),
+        'PAGINATION_COUNT' => array(
             'PARENT' => 'VISUAL',
-            'NAME' => Loc::getMessage('T_IBLOCK_DESC_LIST_CONT'),
+            'NAME' => "Количество элементов на странице",
             'TYPE' => 'STRING',
             'DEFAULT' => '10',
+        ),
+        'PAGINATION_TEMPLATE' => array(
+            'PARENT' => 'VISUAL',
+            'NAME' => "Шаблон пагинации",
+            'TYPE' => 'STRING',
+            'DEFAULT' => '.default',
+        ),
+        'PAGINATION_TITLE' => array(
+            'PARENT' => 'VISUAL',
+            'NAME' => "Заголовок пагинации",
+            'TYPE' => 'STRING',
+            'DEFAULT' => 'Страница:',
+        ),
+        'ACTIVE_DATE' => array(
+            'PARENT' => 'ADDITIONAL_SETTINGS',
+            'NAME' => "Только элементы в диапазоне даты активности",
+            'TYPE' => 'CHECKBOX',
+            'DEFAULT' => 'N',
         ),
         'RAND_ELEMENTS' => array(
             'PARENT' => 'ADDITIONAL_SETTINGS',
@@ -133,8 +150,14 @@ $arComponentParameters = array(
             'TYPE' => 'CHECKBOX',
             'DEFAULT' => 'N',
         ),
-        // кеширование
-        'CACHE_TIME' => array(
+        'ADD_SECTION_IN_BREADCRUMBS' => array(
+            'PARENT' => 'ADDITIONAL_SETTINGS',
+            'NAME' => "Добавлять секцию в хлебные крошки",
+            'TYPE' => 'CHECKBOX',
+            'DEFAULT' => 'N',
+        ),
+        "CACHE_TIME" => array(
+           "DEFAULT" => "3600"
         ),
         'ADD_CACHE_STRING' => array(
             'PARENT' => 'CACHE_SETTINGS',
@@ -142,6 +165,12 @@ $arComponentParameters = array(
             'TYPE' => 'STRING',
             "DEFAULT" => "",
             "MULTIPLE" => "N",
+        ),
+        'SEF_URL' => array(
+            'PARENT' => 'SEF_MODE',
+            'NAME' => 'Корень ЧПУ',
+            'TYPE' => 'STRING',
+            "DEFAULT" => "",
         ),
     ),
 );

@@ -53,6 +53,7 @@ class ElementController extends BaseController
 	protected function getElement()
 	{
 		$element_code = $this->args['element'];
+		$imgCache = (isset($this->component->arParams['IMG_CACHE']) && is_array($this->component->arParams['IMG_CACHE'])) ? $this->component->arParams['IMG_CACHE']['ELEMENT'] : false;
 
 		return Elements::getElement(
 			[
@@ -60,63 +61,8 @@ class ElementController extends BaseController
 				'ACTIVE' => 'Y',
 				'CODE' => $element_code
 			],
-			$this->component->arParams['IMG_CACHE']['ELEMENT']
+			$imgCache
 		);
 	}
 
-	/**
-	 * Устанавливает всю мета информацию включая хлебные крошки
-	 *
-	 * @global CMain $APPLICATION
-	 */
-	// protected function setMetaInfo()
-	// {
-	// 	global $APPLICATION;
-	//
-	// 	$iprops = $this->component->arResult['IPROPERTY_VALUES'];
-	//
-	// 	// Установим TITLE
-	// 	if (!empty($iprops['ELEMENT_PAGE_TITLE']))
-	// 		$APPLICATION->SetTitle($iprops['ELEMENT_PAGE_TITLE']);
-	// 	else
-	// 		$APPLICATION->SetTitle($this->component->arResult['NAME']);
-	//
-	// 	if (is_array($iprops['ELEMENT_META_TITLE']))
-	// 		$APPLICATION->SetPageProperty('title', implode(' ', $iprops['ELEMENT_META_TITLE']));
-	// 	elseif (!empty($iprops['ELEMENT_META_TITLE']))
-	// 		$APPLICATION->SetPageProperty('title', $iprops['ELEMENT_META_TITLE']);
-	//
-	// 	// Установим Keywords
-	// 	if (is_array($iprops['ELEMENT_META_KEYWORDS']))
-	// 		$APPLICATION->SetPageProperty('keywords', implode(' ', $iprops['ELEMENT_META_KEYWORDS']));
-	// 	elseif (!empty($iprops['ELEMENT_META_KEYWORDS']))
-	// 		$APPLICATION->SetPageProperty('keywords', $iprops['ELEMENT_META_KEYWORDS']);
-	//
-	// 	// Установим Description
-	// 	if (is_array($iprops['ELEMENT_META_DESCRIPTION']))
-	// 		$APPLICATION->SetPageProperty('description', implode(' ', $iprops['ELEMENT_META_DESCRIPTION']));
-	// 	elseif (!empty($iprops['ELEMENT_META_DESCRIPTION']))
-	// 		$APPLICATION->SetPageProperty('description', $iprops['ELEMENT_META_DESCRIPTION']);
-	//
-	//
-	// 	// Установим хлебные крошки
-  //   $add_section = isset($this->component->arParams['ADD_SECTION_IN_BREADCRUMBS']) ? $this->component->arParams['ADD_SECTION_IN_BREADCRUMBS'] : 'Y';
-	//
-  //   if ($add_section == 'Y') {
-  //       $section_path = $this->component->arResult['SECTION_PATH'];
-	//
-  //       foreach ($section_path as $section) {
-  //           $APPLICATION->AddChainItem(
-  //               $section['NAME'],
-  //               $section['SECTION_PAGE_URL']
-  //           );
-  //       }
-  //   }
-	//
-	// 	// Элемент
-	// 	$APPLICATION->AddChainItem(
-	// 		$this->component->arResult['NAME'],
-	// 		$this->component->arResult['DETAIL_PAGE_URL']
-	// 	);
-	// }
 }

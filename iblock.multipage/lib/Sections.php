@@ -101,13 +101,19 @@ class Sections
             : null;
 
         if ($imgCache) {
-            $img_cache_type = isset($imgCache['TYPE']) ? $imgCache['TYPE'] : BX_RESIZE_IMAGE_EXACT;
-            $img_cache_size = isset($imgCache['SIZE']) ? $imgCache['SIZE'] : $imgCache;
+            if (!isset($imgCache['SIZE'])) {
+              llc($imgCache);
+              throw new \Bitrix\Main\ArgumentNullException('IMG_CACHE[\'SIZE\']');
+            }
 
-            $arSection['PICTURE_CACHE'] =
-                is_array($imgCache) && $arSection['PICTURE']
-                ? CFile::ResizeImageGet($arSection['PICTURE'], $img_cache_size, $img_cache_type)
-                : null;
+            $img_cache_type = isset($imgCache['TYPE']) ? $imgCache['TYPE'] : BX_RESIZE_IMAGE_EXACT;
+            $img_cache_size = $imgCache['SIZE'];
+            // $img_cache_size = isset($imgCache['SIZE']) ? $imgCache['SIZE'] : $imgCache;
+
+            // $arSection['PICTURE_CACHE'] =
+            //     is_array($imgCache) && $arSection['PICTURE']
+            //     ? CFile::ResizeImageGet($arSection['PICTURE'], $img_cache_size, $img_cache_type)
+            //     : null;
 
              $arSection['DETAIL_PICTURE_CACHE'] =
                 is_array($imgCache) && $arSection['DETAIL_PICTURE']

@@ -6,19 +6,9 @@ $arComponentDescription = array(
    "DESCRIPTION" => "Комплексный компонент инфоблоков",
    "ICON" => "/images/icon.gif",
    "PATH" => array(
-      "ID" => "content",
-      "CHILD" => array(
-         "ID" => "it-delta",
-      )
+      "ID" => "it-delta"
    ),
-   // "AREA_BUTTONS" => array(
-   //    array(
-   //       'URL' => "javascript:alert('Это кнопка!!!');",
-   //       'SRC' => '',
-   //       'TITLE' => "Это кнопка!"
-   //    ),
-   // ),
-   "CACHE_PATH" => "N",
+   "CACHE_PATH" => "Y",
    "COMPLEX" => "Y"
 );
 ?>

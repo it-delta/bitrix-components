@@ -25,18 +25,17 @@ class IndexController extends BaseController
 
         \CPageOption::SetOptionString('main', 'nav_page_in_session', 'N');
 
-        $filter_get = isset($this->component->arParams['FILTER'])
-                      ? $this->component->arParams['FILTER']
-                      : [];
+        $filter_get = (isset($this->component->arParams['FILTER_NAME']) && is_array($this->component->arParams['FILTER_NAME'])) ? $this->component->arParams['FILTER_NAME'] : [];
 
-        $pages_count = $this->component->arParams['PAGINATION']['COUNT'] ? : 10;
+        $pages_count = $this->component->arParams['PAGINATION_COUNT'] ? : 10;
         $nav         = CDBResult::NavStringForCache($pages_count);
-        $cache_id    = $APPLICATION->GetCurDir() . $nav.  implode('', $filter_get);
+        $section_code = $this->args['section'];
+        $cache_id    = $APPLICATION->GetCurDir() . $nav.  implode('', $filter_get).$section_code;
 
         if ($this->component->StartResultCache(false, $cache_id)) {
             // если корневая страница, не добавляем в arResult массив SECTION
             // если не корневая, проверяем на 404 и загружаем
-            $section_code = $this->args['section'];
+            llc($section_code);
             if (isset($section_code)) {
                 $this->component->arResult['SECTION'] = $this->getSection();
 
@@ -127,7 +126,7 @@ class IndexController extends BaseController
 
         $sections = Sections::getSections(
             $filter,
-            $this->component->arParams['SORT']['CATEGORIES'],
+            array($this->component->arParams["SECTION_SORT_BY"] => $this->component->arParams["SECTION_SORT_ORDER"]),
             $this->component->arParams['IMG_CACHE']['CATEGORIES']
         );
 
@@ -141,28 +140,39 @@ class IndexController extends BaseController
      */
     protected function getElements()
     {
-        $filter_get = isset($this->component->arParams['FILTER'])
-                      ? $this->component->arParams['FILTER']
-                      : [];
+        $filter_get = (isset($this->component->arParams['FILTER_NAME']) && is_array($this->component->arParams['FILTER_NAME'])) ? $this->component->arParams['FILTER_NAME'] : [];
 
         $filter_standart = [
             'IBLOCK_ID'     => $this->component->arParams['IBLOCK_ID'],
             'ACTIVE'        => 'Y',
-            'ACTIVE_DATE'   => $this->component->arParams['ACTIVE_DATE'] ? : '',
+            'SECTION_GLOBAL_ACTIVE' => 'Y',
+            'ACTIVE_DATE'   => $this->component->arParams['ACTIVE_DATE'] == 'Y' ? 'Y' : '',
         ];
         // корневая или нет? для корневой выводим все товары
         $section_code = $this->args['section'];
         if (isset($section_code)) {
             $filter_standart['SECTION_ID'] = $this->component->arResult['SECTION']['ID'];
         }
-
         $filter = array_merge($filter_standart, $filter_get);
+
+        if ($this->component->arParams['RAND_ELEMENTS'] == 'Y') {
+            $order = ['RAND' => 'ASC'];
+        } else {
+            $order = [
+              $this->component->arParams["ELEMENTS_SORT_BY_1"] => $this->component->arParams["ELEMENTS_SORT_ORDER_1"],
+              $this->component->arParams["ELEMENTS_SORT_BY_2"] => $this->component->arParams["ELEMENTS_SORT_ORDER_2"]
+            ];
+        }
 
         $items = Elements::getElements(
             $filter,
-            $this->component->arParams['SORT']['ELEMENTS'],
-            $this->component->arParams['PAGINATION'],
-            $this->component->arParams['IMG_CACHE']['ELEMENTS']
+            $order,
+            $this->component->arParams['PAGINATION_COUNT'],
+            $this->component->arParams['IMG_CACHE']['ELEMENTS'],
+            [
+                "name" => $this->component->arParams['PAGINATION_TITLE'],
+                "template" => $this->component->arParams['PAGINATION_TEMPLATE'],
+            ]
         );
 
         $this->pagination = $items['PAGINATION'];

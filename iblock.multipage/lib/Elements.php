@@ -57,7 +57,12 @@ class Elements
      * @param array $pageNavSettings
      * @return array
      */
-    public static function getElements(array $arFilter = [], array $arSort = [], $pagination = false, $imgCache = false, array $pageNavSettings = ['name' => 'Страницы:', 'template' => '.default'])
+    public static function getElements(
+        array $arFilter = [],
+        array $arSort = [],
+        $pagination = false,
+        $imgCache = false,
+        array $pageNavSettings = ['name' => 'Страницы:', 'template' => '.default'])
     {
         $arSelect = self::$arSelect;
         $arResult = ['ITEMS' => [], 'PAGINATION' => ''];
@@ -136,13 +141,18 @@ class Elements
             : null;
 
         if ($imgCache) {
-            $img_cache_type = isset($imgCache['type']) ? $imgCache['type'] : BX_RESIZE_IMAGE_EXACT;
-            $img_cache_size = isset($imgCache['size']) ? $imgCache['size'] : $imgCache;
+            if (!isset($imgCache['SIZE'])) {
+              llc($imgCache);
+              throw new \Bitrix\Main\ArgumentNullException('IMG_CACHE[\'SIZE\']');
+            }
+            // $img_cache_size = isset($imgCache['SIZE']) ? $imgCache['SIZE'] : $imgCache;
+            $img_cache_size = $imgCache['SIZE'];
+            $img_cache_type = isset($imgCache['TYPE']) ? $imgCache['TYPE'] : BX_RESIZE_IMAGE_EXACT;
 
-            $arItem['PREVIEW_PICTURE_CACHE'] =
-                is_array($imgCache) && $arItem['PREVIEW_PICTURE']
-                ?  CFile::ResizeImageGet($arItem['PREVIEW_PICTURE'], $img_cache_size, $img_cache_type)
-                : null;
+            // $arItem['PREVIEW_PICTURE_CACHE'] =
+            //     is_array($imgCache) && $arItem['PREVIEW_PICTURE']
+            //     ?  CFile::ResizeImageGet($arItem['PREVIEW_PICTURE'], $img_cache_size, $img_cache_type)
+            //     : null;
 
             $arItem['DETAIL_PICTURE_CACHE'] =
                 is_array($imgCache) && $arItem['DETAIL_PICTURE']
