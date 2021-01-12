@@ -1,4 +1,5 @@
 # iblock-multipage
+
 Многостраничный компонент для вывода содержимого инфоблока.
 Содержит 3 шаблона:
 1. index
@@ -44,19 +45,19 @@ $APPLICATION->IncludeComponent(
 		// Размер кеша детальной картинки для элемента и секции
 		// Необязательный параметр. Если не установить, то ресайз не будет генерироваться
 		"IMG_CACHE" => [
-        "SECTION" => [
-          "TYPE" => BX_RESIZE_IMAGE_EXACT,// BX_RESIZE_IMAGE_PROPORTIONAL, BX_RESIZE_IMAGE_PROPORTIONAL_ALT
-          "SIZE" => [
-            "width" => "200",
+			"SECTION" => [
+			    "TYPE" => BX_RESIZE_IMAGE_EXACT,// BX_RESIZE_IMAGE_PROPORTIONAL, BX_RESIZE_IMAGE_PROPORTIONAL_ALT
+			    "SIZE" => [
+				"width" => "200",
+				"height" => "200",
+		    	    ]
+			],
+			"ELEMENT" => [
+			    "TYPE" => BX_RESIZE_IMAGE_EXACT,// BX_RESIZE_IMAGE_PROPORTIONAL, BX_RESIZE_IMAGE_PROPORTIONAL_ALT
+			    "SIZE" => [
+    				"width" => "200",
     				"height" => "200",
-          ]
-  			],
-        "ELEMENT" => [
-          "TYPE" => BX_RESIZE_IMAGE_EXACT,// BX_RESIZE_IMAGE_PROPORTIONAL, BX_RESIZE_IMAGE_PROPORTIONAL_ALT
-          "SIZE" => [
-            "width" => "200",
-    				"height" => "200",
-          ]
+			    ]
   			],
 		],
 	]
