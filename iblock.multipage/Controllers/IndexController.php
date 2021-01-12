@@ -25,7 +25,14 @@ class IndexController extends BaseController
 
         \CPageOption::SetOptionString('main', 'nav_page_in_session', 'N');
 
-        $filter_get = (isset($this->component->arParams['FILTER_NAME']) && is_array($this->component->arParams['FILTER_NAME'])) ? $this->component->arParams['FILTER_NAME'] : [];
+        $filter_get = [];
+        if (isset($this->component->arParams['FILTER_NAME']) && preg_match("/^[A-Za-z_][A-Za-z01-9_]*$/", $this->component->arParams["FILTER_NAME"])) {
+            global ${$this->component->arParams["FILTER_NAME"]};
+            $parsedFilter = ${$this->component->arParams["FILTER_NAME"]};
+            if (is_array($parsedFilter)) {
+                $filter_get = $parsedFilter;
+            }
+        }
 
         $pages_count = $this->component->arParams['PAGINATION_COUNT'] ? : 10;
         $nav         = CDBResult::NavStringForCache($pages_count);
@@ -35,7 +42,6 @@ class IndexController extends BaseController
         if ($this->component->StartResultCache(false, $cache_id)) {
             // если корневая страница, не добавляем в arResult массив SECTION
             // если не корневая, проверяем на 404 и загружаем
-            llc($section_code);
             if (isset($section_code)) {
                 $this->component->arResult['SECTION'] = $this->getSection();
 
@@ -142,6 +148,16 @@ class IndexController extends BaseController
     {
         $filter_get = (isset($this->component->arParams['FILTER_NAME']) && is_array($this->component->arParams['FILTER_NAME'])) ? $this->component->arParams['FILTER_NAME'] : [];
 
+        $filter_get = [];
+        if (isset($this->component->arParams['FILTER_NAME']) && preg_match("/^[A-Za-z_][A-Za-z01-9_]*$/", $this->component->arParams["FILTER_NAME"])) {
+            global ${$this->component->arParams["FILTER_NAME"]};
+            $parsedFilter = ${$this->component->arParams["FILTER_NAME"]};
+            if (is_array($parsedFilter)) {
+                $filter_get = $parsedFilter;
+            }
+        }
+
+llc($filter_get);
         $filter_standart = [
             'IBLOCK_ID'     => $this->component->arParams['IBLOCK_ID'],
             'ACTIVE'        => 'Y',
